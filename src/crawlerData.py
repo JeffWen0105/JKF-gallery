@@ -156,7 +156,7 @@ def run(times=1):
         times = 1
     for i in range(1, times+1):
         start(i)
-        time.sleep(0.5)
+        time.sleep(1)
     delete_data(delete_rotation)
     logger.success("SUCCESS ~~")
     
