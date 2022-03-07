@@ -27,7 +27,8 @@ import copy
 import time
 import hashlib
 import argparse
-import datetime
+from datetime import datetime, timedelta
+
 
 import requests
 from loguru import logger
@@ -100,7 +101,7 @@ class JkfGetting():
     def make_dict(self, url_list, title_list, hash_id_list, img_list, date_list):
         data = []
         _ = 0
-        c  = lambda s: datetime.datetime.strptime(s, '%Y-%m-%d')
+        c  = lambda s: datetime.strptime(s, '%Y-%m-%d')
         while _ < len(hash_id_list):
             data.append({
                 "hashId": hash_id_list[_],
@@ -108,7 +109,7 @@ class JkfGetting():
                 "img": img_list[_],
                 "url": url_list[_],
                 'dateTime':  c(date_list[_]),
-                'createdAt' : datetime.datetime.now()
+                'createdAt' : datetime.now()
             })
             _ += 1
         return data
@@ -123,7 +124,6 @@ def argParse():
                                      description="將JKF 網路美女主頁爬取並寫入至 Mongo (預設為本地)， 詳請參閱README.md")
     parser.add_argument("pages", type=int,
                         help="How Many Pages You Want ??")
-    args = parser.parse_args()
     return parser.parse_args()
 
 @logger.catch
@@ -147,13 +147,20 @@ def insert_data_fun(data):
         print(_)
 
 @logger.catch
+def delete_data(delete_rotation):
+    collection.delete_many(({"createdAt":{"$lt": datetime.now() - timedelta(days=delete_rotation) }}))
+
+@logger.catch
 def run(times=1):
     if times < 1:
         times = 1
     for i in range(1, times+1):
         start(i)
         time.sleep(0.5)
+    delete_data()
     logger.success("SUCCESS ~~")
+    
+
 
 
 if __name__ == "__main__":
@@ -161,6 +168,10 @@ if __name__ == "__main__":
         my_mongo_ip = "127.0.0.1"
     else:
         my_mongo_ip = os.getenv('myMongoIP')
+    if not os.getenv('dataRotation'):
+        delete_rotation = 180
+    else:
+        delete_rotation = os.getenv('dataRotation')
     logger.add("logs/howhow.log",level="INFO", rotation="350 MB")
     args = argParse()
     client = MongoClient(my_mongo_ip, 27017)

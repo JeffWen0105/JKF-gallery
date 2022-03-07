@@ -22,12 +22,15 @@
 # If not, see <http://www.gnu.org/licenses/>.
 # =======================================================================
 
+import os
 import sqlite3
 from loguru import logger
 
 class MyDB:
 
     def __init__(self):
+        if os.path.isdir('db'):
+            os.mkdir('db')
         self.conn = sqlite3.connect('db/lock.db')
         self.c = self.conn.cursor()
         self.c.execute("""CREATE TABLE IF NOT EXISTS lock (

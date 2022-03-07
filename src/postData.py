@@ -64,7 +64,8 @@ class JkfContextGetting():
         rawdata = self.start_get_requests(
             headers=self.headers, url=f"{data_dict['url']}")
         soup = self.bs4_soup(rawdata)
-        site_imgs = [i.get("file") for i in soup.select(".zoom") if "gif" not in i]
+        imgs = [i.get("file") for i in soup.select(".zoom") if "gif" not in i]
+        site_imgs = [i for i in imgs if i]
         data = {
             "imgs": site_imgs,
             "title": data_dict["title"],
@@ -97,7 +98,7 @@ class NotifyPost:
         if len(data['imgs']) ==0:
             logger.critical(f"爬取失敗... 請檢查 Cookies 或是更換 user-agent (第45行) ～～")
             os._exit(1)
-        logger.info(f"{data['title']} ->總計{len(data['imgs']) -1}張圖")
+        logger.info(f"{data['title']} ->總計{len(data['imgs']) }張圖")
         for i in range(0,len(data['imgs'])):
             payload = {
                 'message': f"\n第:{i+1}張美女圖，總計{len(data['imgs'])}張圖",
