@@ -136,14 +136,22 @@ function subtract() {
     } else {
         pages = 0;
     }
+    toTop();
 }
 
 function add() {
     pages = pages + 26;
     getProducts();
+    toTop();
 }
 
 function reload() {
     pages = 0;
+    toTop();
     getProducts();
+}
+
+
+function toTop(){
+    $('html,body').animate({scrollTop:100}, 11);
 }
