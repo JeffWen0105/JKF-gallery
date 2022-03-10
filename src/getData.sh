@@ -24,6 +24,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 # =======================================================================
 
-source venv/bin/activate
+# source venv/bin/activate
 
 python3 crawlerData.py $1

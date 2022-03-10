@@ -25,5 +25,5 @@
 # =======================================================================
 
 
-source venv/bin/activate
+# source venv/bin/activate
 gunicorn -w 3 app:app -b 0.0.0.0:5000 --reload --access-logfile '-' --timeout 300
